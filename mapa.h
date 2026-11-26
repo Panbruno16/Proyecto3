@@ -8,6 +8,12 @@
 #define MAPA_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+/**
+ * Structs y datos
+ */
 
 struct mapa {
     int cantidadDeLugares;
@@ -21,6 +27,8 @@ struct lugar {
     char nombre[50];
     struct actor* listaDeActores;
     struct proyectos* listaDeProyectos;
+    struct secundarias* listaDeSecundarias;
+    struct lugar* siguiente;
 };
 
 
@@ -73,6 +81,23 @@ struct secundarias {
     struct secundarias* siguiente;
 };
 
+//Funciones
+
+
+/**
+ * Genera la matriz de adyacencia aleatoria con los portales y sus pesos.
+ */
+void generarMapa(struct mapa* mapa);
+
+/**
+ * Lee el archivo lugares.txt y crea la lista enlazada de lugares.
+ */
+void crearLugares(struct mapa* mapa);
+
+/**
+ * Muestra un resumen de los primeros lugares y sus portales (para pruebas).
+ */
+void mostrarResumenMundo(struct mapa* mapa);
 
     
 
