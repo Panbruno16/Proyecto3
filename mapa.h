@@ -42,7 +42,7 @@ struct banda {
 
 struct persona {
     char nombre[50];
-    int profesion;
+    char profesion[50];
     int saludMental;
     int saludFisica;
     struct emocion* listaEmociones;
@@ -99,6 +99,20 @@ void crearLugares(struct mapa* mapa);
  */
 void mostrarResumenMundo(struct mapa* mapa);
 
-    
+/**
+ * Asegura que el mapa sea conexo creando portales adicionales si es necesario.
+ */
+void asegurarComponenteConexa(struct mapa* mapa);
+
+/**
+ * Recorre el mapa desde un nodo inicial y marca los nodos visitados.
+ */
+void recorrerMapa(struct mapa* mapa, int nodoInicio, int* visitados);
+
+/**
+ * Crea una banda con 3 integrantes y asigna profesiones aleatorias desde el archivo profesiones.txt.
+ */
+void crearBanda(struct banda* banda);
+
 
 #endif // MAPA_H

@@ -112,16 +112,15 @@ void crearLugares(struct mapa* mapa){
     }
 }
 
-
 void mostrarResumenMundo(struct mapa* mapa){
     printf("Resumen del mundo generado:\n");
     printf("Cantidad de lugares: %d\n", mapa->cantidadDeLugares);
     printf("Densidad de portales: %d%%\n", mapa->densidadDePortales);
 
-    printf("Primeros 5 lugares y sus portales de salida:\n");
+    printf("Primeros 20 lugares y sus portales de salida:\n");
     struct lugar* lugarActual= mapa->listaLugares;
     int i=0;
-    while(lugarActual != NULL && i < 5){
+    while(lugarActual != NULL && i < 20){
         printf("Lugar %d: %s-> ", i, lugarActual->nombre);
         int portales=0;
         for(int j=0; j<mapa->cantidadDeLugares; j++){
@@ -138,4 +137,133 @@ void mostrarResumenMundo(struct mapa* mapa){
         i++;
     }
     printf("... (y más lugares no mostrados)\n");
+}
+
+void recorrerMapa(struct mapa* mapa, int nodoInicio, int* visitados){
+    int n= mapa->cantidadDeLugares;
+    int cola[200];
+    int frente=0; 
+    int final=0;
+
+    visitados[nodoInicio]=1;
+    cola[final]= nodoInicio;
+    final++;
+
+    while(frente < final){
+        int w= cola[frente];
+        frente++;
+
+        for(int j=0; j<n; j++){
+            if(mapa->matrizPortales[w][j] > 0 && visitados[j]==0){
+                visitados[j]=1;
+                cola[final]= j;
+                final++;
+            }
+        }
+    }
+}
+
+void asegurarComponenteConexa(struct mapa* mapa){
+    int n= mapa->cantidadDeLugares;
+    int* visitados= calloc(n, sizeof(int));
+    int portalesCreados=0;
+
+    recorrerMapa(mapa, 0, visitados);
+    for(int i = 1; i<n; i++){
+        if(visitados[i]==0){
+            mapa->matrizPortales[0][i] = 1 + rand() % 50;
+            portalesCreados++;
+        }
+    }
+    for(int i =1; i<n; i++){
+        for(int k=0; k<n; k++){
+            visitados[k]=0;
+        }
+        recorrerMapa(mapa, i, visitados);
+        if(visitados[0]==0){
+            mapa->matrizPortales[i][0] = 1 + rand() % 50;
+            portalesCreados++;
+        }
+    }
+    free(visitados);
+    /**
+     if(portalesCreados>0){
+        printf("Se crearon %d portales adicionales para asegurar que el mapa sea conexo.\n", portalesCreados);
+    } else {
+        printf("El mapa ya era conexo. No se crearon portales adicionales.\n");
+    }*/
+}
+
+void crearBanda(struct banda* banda){
+    char nombreProfesion[10][50];
+    int totalProfesiones=0;
+
+    FILE* archivo= fopen("profesiones.txt", "r");
+    if(archivo==NULL){
+        printf("Error al abrir el archivo profesiones.txt");
+        printf("No se puede crear una banda sin profesiones\n");
+        banda->integrantes= NULL;
+        return;
+    }else{
+        char linea[50];
+        while(fgets(linea, 50, archivo) != NULL && totalProfesiones<10){
+            linea[strcspn(linea, "\n")] = 0;
+            if(strlen(linea)>0){
+                strcpy(nombreProfesion[totalProfesiones], linea);
+                totalProfesiones++;
+            }
+        }
+        fclose(archivo);
+    }
+
+    if(totalProfesiones==0){
+        printf("No se encontraron profesiones validas en el archivo profesiones.txt\n");
+        banda->integrantes= NULL;
+        return;
+    }
+    if(totalProfesiones<3){
+        printf("Advertencia: No hay suficientes profesiones para crear una banda completa. Se asignaran profesiones repetidas.\n");
+        banda->integrantes= NULL;
+        return;
+    }
+
+
+    int profesionesUsadas[10] = {0};
+    banda->integrantes= NULL;
+    struct persona* ultimo= NULL;
+    for(int i = 0; i<3; i++){
+        struct persona* nuevo= calloc(1, sizeof(struct persona));
+        sprintf(nuevo->nombre, "Integrante %d", i+1);
+        int indiceProfesion;
+        do{
+            indiceProfesion= rand() % totalProfesiones;
+        }while(profesionesUsadas[indiceProfesion]==1);
+
+        profesionesUsadas[indiceProfesion]=1;
+        strcpy(nuevo->profesion, nombreProfesion[indiceProfesion]);
+
+        nuevo->saludMental= 50 + rand() % 51;
+        nuevo->saludFisica= 50 + rand() % 51;
+        nuevo->listaEmociones= NULL;
+        nuevo->siguiente= NULL;
+
+        if(banda->integrantes==NULL){
+            banda->integrantes= nuevo;
+            ultimo= nuevo;
+        } else {
+            ultimo->siguiente= nuevo;
+            ultimo= nuevo;
+        }
+    }
+    banda->saludMentalBanda= 0;
+    banda->saludFisicaBanda= 0;
+    banda->misionActual= 0;
+    banda->listaSecundarias= NULL;
+
+    printf("Banda creada con 3 integrantes:\n");
+    struct persona* actual= banda->integrantes;
+    while(actual != NULL){
+        printf(" - %s (Profesión: %s)\n", actual->nombre, actual->profesion);
+        actual= actual->siguiente;
+    }
 }

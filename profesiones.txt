@@ -1,0 +1,10 @@
+Carpintero
+Ingeniero
+Enfermero
+Biologo
+Agrologo
+Contador
+Programador
+Filosofo
+Albañil
+Profesor

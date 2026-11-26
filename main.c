@@ -13,15 +13,16 @@
 int main() {
     srand(time(NULL)); 
     struct mapa miMapa;
+    struct banda miBanda;
     miMapa.densidadDePortales = 20; // Establecer la densidad de portales deseada
     miMapa.cantidadDeLugares = 200; // Establecer la cantidad de lugares deseada
     crearLugares(&miMapa);
     generarMapa(&miMapa);
-
+    asegurarComponenteConexa(&miMapa);
+    crearBanda(&miBanda);
 
     mostrarResumenMundo(&miMapa);
 
-    // Liberar memoria y realizar otras operaciones necesarias
 
     return 0;
 }
