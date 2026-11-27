@@ -114,5 +114,10 @@ void recorrerMapa(struct mapa* mapa, int nodoInicio, int* visitados);
  */
 void crearBanda(struct banda* banda);
 
+/**
+ * Calcula la distancia mínima entre dos lugares usando el algoritmo de Dijkstra.
+ */
+int calcularDijkstra(struct mapa* mapa, int origen, int destino);
+
 
 #endif // MAPA_H

@@ -21,6 +21,8 @@ int main() {
     asegurarComponenteConexa(&miMapa);
     crearBanda(&miBanda);
 
+    calcularDijkstra(&miMapa, 0, 4); 
+
     mostrarResumenMundo(&miMapa);
 
 

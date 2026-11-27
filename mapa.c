@@ -267,3 +267,66 @@ void crearBanda(struct banda* banda){
         actual= actual->siguiente;
     }
 }
+
+int calcularDijkstra(struct mapa* mapa, int origen, int destino){
+    int n  = mapa->cantidadDeLugares;
+    int distancia[200];
+    int visitado[200];
+    int anteriores[200];
+    
+    for(int i=0; i<n; i++){
+        distancia[i]= INT_MAX;
+        visitado[i]= 0;
+        anteriores[i]= -1;
+    }
+    distancia[origen]= 0;
+
+    for(int i=0; i<n; i++){
+        int W = -1;
+        int minDistancia = INT_MAX;
+        for(int j=0; j<n; j++){
+            if(visitado[j]==0 && distancia[j]<minDistancia){
+                minDistancia= distancia[j];
+                W= j;
+            }
+        }
+        if (W==-1 || distancia[W]== INT_MAX){
+            break;
+        }
+        visitado[W]= 1;
+        for(int V=0; V<n; V++){
+            if(mapa->matrizPortales[W][V]>0 && visitado[V]==0){
+                int nuevaDistancia= distancia[W] + mapa->matrizPortales[W][V];
+                if(nuevaDistancia<distancia[V]){
+                    distancia[V]= nuevaDistancia;
+                    anteriores[V]= W;
+                }
+            }
+        }
+    }
+    int ruta[200];
+    int pasos=0;
+    int actual= destino;
+
+    while(actual != -1){
+        ruta[pasos]= actual;
+        pasos++;
+        actual= anteriores[actual];
+    }
+
+
+    //Verficiar
+    printf("Ruta desde %d hasta %d| \n", origen, destino);
+    printf("Costo total de salud: %d\n", distancia[destino]);
+    printf("Ruta: ");
+    for(int i=pasos-1; i>=0; i--){
+        printf("%d", ruta[i]);
+        if(i>0){
+            printf(" -> ");
+        }
+    }
+    printf("\n");
+    
+
+    return distancia[destino];
+}
