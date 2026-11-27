@@ -1,5 +1,5 @@
 Ansiedad
-Felicidad
 Estres
-Disciplina
 Pereza
+Disciplina
+Felicidad

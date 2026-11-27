@@ -119,5 +119,15 @@ void crearBanda(struct banda* banda);
  */
 int calcularDijkstra(struct mapa* mapa, int origen, int destino);
 
+/**
+ * Asigna las emociones a cada Integrante de la banda de manera enlistada. 
+ */
+
+void asignarEmociones(struct persona* persona);
+
+/**
+ * Mostrar emociones de cada persona integrante en la banda. 
+ */
+void mostrarEmociones(struct persona* persona);
 
 #endif // MAPA_H

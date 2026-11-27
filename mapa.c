@@ -222,7 +222,7 @@ void crearBanda(struct banda* banda){
         return;
     }
     if(totalProfesiones<3){
-        printf("Advertencia: No hay suficientes profesiones para crear una banda completa. Se asignaran profesiones repetidas.\n");
+        printf("Error: No hay suficientes profesiones para crear una banda completa.");
         banda->integrantes= NULL;
         return;
     }
@@ -247,6 +247,10 @@ void crearBanda(struct banda* banda){
         nuevo->listaEmociones= NULL;
         nuevo->siguiente= NULL;
 
+        asignarEmociones(nuevo);
+
+
+
         if(banda->integrantes==NULL){
             banda->integrantes= nuevo;
             ultimo= nuevo;
@@ -264,7 +268,69 @@ void crearBanda(struct banda* banda){
     struct persona* actual= banda->integrantes;
     while(actual != NULL){
         printf(" - %s (Profesión: %s)\n", actual->nombre, actual->profesion);
+        printf("Emociones: ");
+        mostrarEmociones(actual);
+        printf("\n");
         actual= actual->siguiente;
+    }
+}
+
+void asignarEmociones(struct persona* persona){
+    if(persona==NULL){
+        return;
+    }
+    char nombreEmocion[5][30];
+    int totalEmociones=0;
+
+    FILE* archivo= fopen("emociones.txt", "r");
+    if(archivo==NULL){
+        printf("Error al abrir el archivo emociones.txt");
+        printf("No se pueden asignar emociones sin el archivo\n");
+        return;
+    }
+    char linea[30];
+    while(fgets(linea, 30, archivo) != NULL && totalEmociones <5){
+        linea[strcspn(linea, "\n")]=0;
+        if(strlen(linea)>0){
+            strcpy(nombreEmocion[totalEmociones], linea);
+            totalEmociones++;
+        }
+    }
+    fclose(archivo);
+
+    if(totalEmociones==0){
+        printf("No se encontraron emociones validas en el archivo emociones.txt\n");
+        return;
+    }
+    int emocionesAsignadas= 0;
+    int emocionesUsadas[5] = {0};
+
+    for(int i=0; i <totalEmociones; i++){
+        struct emocion* nueva= calloc(1, sizeof(struct emocion));
+        strcpy(nueva->nombre, nombreEmocion[i]);
+        nueva->valor= 5 + rand() % 16;
+        if (strcmp(nueva->nombre, "Felicidad")==0 || strcmp(nueva->nombre, "Disciplina")==0){
+            nueva->esNegativa= 0;
+        } else {
+            nueva->esNegativa= 1;
+        }
+        nueva->siguiente= persona->listaEmociones;
+        persona->listaEmociones= nueva;
+    }
+}
+
+void mostrarEmociones(struct persona* persona){
+    struct emocion* actual = persona->listaEmociones;
+    if(actual==NULL){
+        printf("No hay emociones asignadas a %s\n", persona->nombre);
+        return;
+    }
+    while(actual != NULL){
+        printf("[%s: %d, %s]",
+        actual->nombre,
+        actual->valor,
+        actual->esNegativa == 1 ? "Negativa" : "Positiva");
+        actual=actual->siguiente;
     }
 }
 
@@ -304,6 +370,12 @@ int calcularDijkstra(struct mapa* mapa, int origen, int destino){
             }
         }
     }
+
+    if(distancia[destino]== INT_MAX){
+        printf("No hay ruta desde %d hasta %d\n", origen, destino);
+        return -1;
+    }
+
     int ruta[200];
     int pasos=0;
     int actual= destino;

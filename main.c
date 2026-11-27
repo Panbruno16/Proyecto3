@@ -14,14 +14,14 @@ int main() {
     srand(time(NULL)); 
     struct mapa miMapa;
     struct banda miBanda;
-    miMapa.densidadDePortales = 20; // Establecer la densidad de portales deseada
+    miMapa.densidadDePortales = 10; // Establecer la densidad de portales deseada
     miMapa.cantidadDeLugares = 200; // Establecer la cantidad de lugares deseada
     crearLugares(&miMapa);
     generarMapa(&miMapa);
     asegurarComponenteConexa(&miMapa);
     crearBanda(&miBanda);
 
-    calcularDijkstra(&miMapa, 0, 4); 
+    calcularDijkstra(&miMapa, 0, 10); 
 
     mostrarResumenMundo(&miMapa);
 
