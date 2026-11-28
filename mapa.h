@@ -20,12 +20,14 @@ struct mapa {
     int matrizPortales[200][200];    
     int densidadDePortales;
     int posicionBanda;
+    int pesoTotalProyectos;
     struct lugar* listaLugares;
 };
 
 struct lugar {
     char nombre[50];
     struct actor* listaDeActores;
+    int pesoInicialProyectos;
     struct proyecto* listaDeProyectos;
     struct secundaria* listaDeSecundarias;
     struct lugar* siguiente;
@@ -169,8 +171,30 @@ struct lugar* obtenerLugar(struct mapa* mapa, int posicion);
  */
 void llegarAlLugar(struct mapa* mapa, struct banda* banda);
 
+/**
+ * funcion para calcular los pesos de proyectos de unb lugar.
+ */
+int calcularPesoProyectos(struct lugar* lugar);
 
+/**
+ * Funcion para calcular el peso de proyectos en todo el mapa. 
+ */
+int calcularPesoTotalMundo(struct mapa* mapa);
 
+/**
+ * Funcion que muestra el indice de bienestar en todo el mapa.
+ */
+void mostrarBienestarMundo(struct mapa* mapa);
+
+/**
+ * Funcion para calcular el bienestar de un lugar.
+ */
+int calcularBienestarLugar(struct lugar* lugar);
+
+/**
+ * Funcion para mostrar el porcentaje del bienestar en un lugar.
+ */
+void mostrarBienestarLugar(struct lugar* lugar);
 
 
 

@@ -319,6 +319,36 @@ void asignarEmociones(struct persona* persona){
     }
 }
 
+int calcularSaludMental(struct persona* persona){
+    int sumaPositivas=0;
+    int sumaNegativas=0;
+    
+    struct emocion* actual=persona->listaEmociones;
+    while(actual!=NULL){
+        if(actual->esNegativa==0){
+            sumaPositivas=sumaPositivas+actual->valor;
+        }else{
+            sumaNegativas=sumaNegativas+actual->valor;
+        }
+        actual=actual->siguiente;
+    }
+    int bono=0;
+    if(persona->profesion=="Programador" || "Filosofo"||"Contador"||"Profesor"||"Ingeniero"){
+        bono=10;
+    }else if(persona->profesion=="Albañil"||"Carpintero"){
+        bono=-5;
+    }
+    int salud=60+bono+sumaPositivas-(sumaNegativas/2);
+    if(salud>150){
+        salud=150;
+    }
+    if(salud<0){
+        salud=0;
+    }
+    return salud;
+}
+
+
 void mostrarEmociones(struct persona* persona){
     struct emocion* actual = persona->listaEmociones;
     if(actual==NULL){
@@ -533,6 +563,7 @@ void asignarProyectos(struct mapa* mapa){
                 nuevo->dannoBienestar=elegido->dannoBienestar;
                 nuevo->saludMentalRequerida=elegido->saludMentalRequerida;
                 nuevo->lugarDestino=elegido->lugarDestino;
+                lugarActual->pesoInicialProyectos=lugarActual->pesoInicialProyectos+elegido->dannoBienestar;
 
                 nuevo->siguiente=lugarActual->listaDeProyectos;
                 lugarActual->listaDeProyectos=nuevo;
@@ -587,15 +618,15 @@ void llegarAlLugar(struct mapa* mapa, struct banda* banda){
     printf("Has llegado a %s\n", lugar->nombre);
     struct actor* actorActual=lugar->listaDeActores;
     if(actorActual==NULL){
-        printf("No hay actor presenten en este lugar, relajado\n");
+        printf("No hay actor presente en este lugar, relajado\n");
     }else{
         while(actorActual!=NULL){
             printf("ATAQUE DEL ACTOR %s (Daño Mental: %d, Daño Fisico: %d)\n", actorActual->nombre, actorActual->dannoMental, actorActual->dannoFisico);
             actorActual=actorActual->siguiente;
         }
     }
-
     struct proyecto* proyectoActual=lugar->listaDeProyectos;
+
     if (proyectoActual!=NULL){
         printf("Proyectos disponibles:\n");
         while(proyectoActual!=NULL){
@@ -604,6 +635,68 @@ void llegarAlLugar(struct mapa* mapa, struct banda* banda){
             proyectoActual=proyectoActual->siguiente;
         }
     } 
+    mostrarBienestarLugar(lugar);
+}
+
+int calcularPesoProyectos(struct lugar* lugar){
+    int peso=0;
+    struct proyecto* actual=lugar->listaDeProyectos;
+    while(actual!=NULL){
+        peso=peso+actual->dannoBienestar;
+        actual=actual->siguiente;
+    }
+    return peso;
+}
+
+int calcularPesoTotalMundo(struct mapa* mapa){
+    int total=0;
+    struct lugar* lugarActual=mapa->listaLugares;
+    while(lugarActual!=NULL){
+        total=total+calcularPesoProyectos(lugarActual);
+        lugarActual=lugarActual->siguiente;
+    }
+    return total;
+}
+
+void mostrarBienestarMundo(struct mapa* mapa){
+    if(mapa==NULL){
+        printf("No hay mundo disponible\n");
+    }
+    if(mapa->pesoTotalProyectos==0){
+        printf("Parece que no quedan mas proyectos, sin embargo no todo puede ser perfecto.\nEl mal prevalece con su 10%%\n");
+        return;
+    }
+    int pesoActual=calcularPesoTotalMundo(mapa);
+    int problemas= pesoActual *100/mapa->pesoTotalProyectos;
+    if(problemas<10){
+        problemas=10;
+    }    
+    printf("Indice de problemas del mundo: %d%%\n", problemas);
+}
+
+int calcularBienestarLugar(struct lugar* lugar){
+    if(lugar->pesoInicialProyectos==0){
+        return 100;
+    }
+    int pesoActual=0;
+    struct proyecto* actual=lugar->listaDeProyectos;
+    while(actual!=NULL){
+        pesoActual=pesoActual+actual->dannoBienestar;
+        actual=actual->siguiente;
+    }
+    int bienestar=100-(pesoActual*100/lugar->pesoInicialProyectos);
+    return bienestar;
+}
+
+void mostrarBienestarLugar(struct lugar* lugar){
+    int pct=calcularBienestarLugar(lugar);
+    printf("Bienestar de este lugar: %d%%\n", pct);
+    if(pct==100){
+        printf("Este lugar esta decente.\n");
+    }
+    if(pct<100){
+        printf("Aún quedan trabajos por hacer, busque proyectos.\n");
+    }
 }
 
 
