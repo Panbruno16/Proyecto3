@@ -459,16 +459,16 @@ void asignarActores(struct mapa* mapa){
 }
 
 void mostrarActores(struct mapa* mapa){
-    struct lugar* lugarActual=mapa->listaLugares;
-    int indice=0;
     if(mapa==NULL){
         printf("No hay mundo disponible\n");
         return;
     }
+    struct lugar* lugarActual=mapa->listaLugares;
+    int indice=0;
     while(lugarActual!=NULL){
        struct actor* actual=lugarActual->listaDeActores;
        if(actual!=NULL){
-        printf("lugar %d (%s)", indice, lugarActual->nombre);
+        printf("lugar %d (%s)\n", indice, lugarActual->nombre);
         while(actual!=NULL){
             printf("   - %s (M:%d F:%d)\n",
             actual->nombre, actual->dannoMental, actual->dannoFisico);
@@ -482,8 +482,89 @@ void mostrarActores(struct mapa* mapa){
     }
 }
 
+int leerCatalogoProyectos(struct proyecto catalogo[], int capacidad){
+    FILE* archivo=fopen("proyectos.txt", "r");
+    if (archivo==NULL){
+        printf("Error al abrir los proyectos, no se pudo crear el mundo\n");
+        return 0;
+    }
+    int total=0;
+    char linea[100];
+    while(fgets(linea, 100, archivo)!=NULL){
+        linea[strcspn(linea, "\n")]=0;
+        if(strlen(linea)==0){
+            continue;
+        }
+        if(total>= capacidad){
+            break;
+        }
+        if(sscanf(linea,"%49[^,], %d, %d, %d", 
+            catalogo[total].nombre,
+            &catalogo[total].dannoBienestar,
+            &catalogo[total].saludMentalRequerida,
+            &catalogo[total].lugarDestino
+        )==4){
+            total++; 
+        }
+    }
+    fclose(archivo);
+    if(total==0){
+        printf("No se encontraron proyectos validos.\n");
+    }
+    return total; 
+}
 
+void asignarProyectos(struct mapa* mapa){
+    struct proyecto catalogo[100];
+    int total= leerCatalogoProyectos(catalogo, 100);
+    if (total==0){
+        printf("Sin catalogo de proyectos, no se pudo crear el mundo\n");
+        return;
+    }
+    struct lugar* lugarActual= mapa->listaLugares;
+    while(lugarActual!=NULL){
+        if(rand()%100<40){
+            struct proyecto* elegido=&catalogo[rand()%total];
+            if(elegido->lugarDestino<0 || elegido->lugarDestino>=mapa->cantidadDeLugares){
+                printf("Proyecto %s tiene destino invalido, se omite.\n", elegido->nombre);
+            }else{
+                struct proyecto* nuevo=calloc(1, sizeof(struct proyecto));
+                strcpy(nuevo->nombre, elegido->nombre);
+                nuevo->dannoBienestar=elegido->dannoBienestar;
+                nuevo->saludMentalRequerida=elegido->saludMentalRequerida;
+                nuevo->lugarDestino=elegido->lugarDestino;
 
+                nuevo->siguiente=lugarActual->listaDeProyectos;
+                lugarActual->listaDeProyectos=nuevo;
+            }
+        }
+        lugarActual=lugarActual->siguiente;
+    }
+}
+
+void mostrarProyectos(struct mapa* mapa){
+    if(mapa==NULL){
+        printf("No hay mundo disponible\n");
+        return;
+    }
+    struct lugar* lugarActual=mapa->listaLugares;
+    int indice=0;
+    while(lugarActual!=NULL){
+       struct proyecto* actual=lugarActual->listaDeProyectos;
+       if(actual!=NULL){
+        printf("lugar %d (%s)\n", indice, lugarActual->nombre);
+        while(actual!=NULL){
+            printf("   - %s (DB:%d S:%d Destino: %d)\n",
+            actual->nombre, actual->dannoBienestar, actual->saludMentalRequerida, actual->lugarDestino);
+            actual=actual->siguiente;
+            }
+        }else{
+            printf("Lugar %d (%s)    - no tiene proyectos\n", indice, lugarActual->nombre);
+        }
+        lugarActual=lugarActual->siguiente;
+        indice++;
+    }
+}
 
 
 

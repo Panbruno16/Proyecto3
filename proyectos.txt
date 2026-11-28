@@ -1,0 +1,3 @@
+Parque eólico en La Cangreja,10,45,17
+Huerto comunitario,6,30,42
+Río limpio para El Guarco,8,50,5

@@ -26,8 +26,8 @@ struct mapa {
 struct lugar {
     char nombre[50];
     struct actor* listaDeActores;
-    struct proyectos* listaDeProyectos;
-    struct secundarias* listaDeSecundarias;
+    struct proyecto* listaDeProyectos;
+    struct secundaria* listaDeSecundarias;
     struct lugar* siguiente;
 };
 
@@ -37,7 +37,7 @@ struct banda {
     int saludMentalBanda;
     int saludFisicaBanda;
     int misionActual;
-    struct secundarias* listaSecundarias;
+    struct secundaria* listaSecundarias;
 };
 
 struct persona {
@@ -63,21 +63,21 @@ struct actor {
     struct actor* siguiente;
 };
 
-struct proyectos {
+struct proyecto {
     char nombre[50];
     int dannoBienestar;
     int saludMentalRequerida;
     int lugarDestino;
-    struct proyectos* siguiente;
+    struct proyecto* siguiente;
 };
 
-struct secundarias {
+struct secundaria {
     char nombre[50];
     int profesionRequerida;
     int recompensaMental;
     int recompensaFisica;
     int lugarDestino;
-    struct secundarias* siguiente;
+    struct secundaria* siguiente;
 };
 
 //Funciones
@@ -144,8 +144,18 @@ void asignarActores(struct mapa* mapa);
  */
 void mostrarActores(struct mapa* mapa);
 
+/**
+ * funcion para leer un catalogo de proyectos y asi poder usarlos despues en asignarProyectos.
+ */
+int leerCatalogoProyectos(struct proyecto catalogo[], int capacidad);
 
+/**
+ * Funcion para poder asignar los proyectos en distintos lugares, tienen nombre, dañobienestar, saludrequerida y destino. 
+ */
+void asignarProyectos(struct mapa* mapa);
 
-
-
+/**
+ * Funcion para mostrar los proyectos y sus asiganciones.
+ */
+void mostrarProyectos(struct mapa* mapa);
 #endif // MAPA_H

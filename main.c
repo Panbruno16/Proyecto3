@@ -18,14 +18,15 @@ int main() {
     miMapa.cantidadDeLugares = 200; // Establecer la cantidad de lugares deseada
     crearLugares(&miMapa);
     asignarActores(&miMapa);
+    asignarProyectos(&miMapa);
     generarMapa(&miMapa);
     asegurarComponenteConexa(&miMapa);
     crearBanda(&miBanda);
 
-    calcularDijkstra(&miMapa, 0, 10); 
+    calcularDijkstra(&miMapa, 0, 5); 
 
     mostrarResumenMundo(&miMapa);
     mostrarActores(&miMapa);
-
+    mostrarProyectos(&miMapa);
     return 0;
 }
