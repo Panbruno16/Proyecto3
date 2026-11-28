@@ -17,6 +17,14 @@ int main() {
     miMapa.densidadDePortales = 10; // Establecer la densidad de portales deseada
     miMapa.cantidadDeLugares = 200; // Establecer la cantidad de lugares deseada
     crearLugares(&miMapa);
+    
+    if(miMapa.cantidadDeLugares > 0){
+    miMapa.posicionBanda = rand() % miMapa.cantidadDeLugares;
+    }else{
+    printf("No hay mundo, no se puede iniciar la banda.\n");
+    return 1;
+    }
+
     asignarActores(&miMapa);
     asignarProyectos(&miMapa);
     generarMapa(&miMapa);

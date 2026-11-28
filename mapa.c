@@ -566,6 +566,45 @@ void mostrarProyectos(struct mapa* mapa){
     }
 }
 
+struct lugar* obtenerLugar(struct mapa* mapa, int posicion){
+    struct lugar* lugar= mapa->listaLugares;
+    
+    for (int i=0; i<posicion;i++){
+        if(lugar==NULL){
+            break;
+        }
+        lugar= lugar->siguiente;
+    }
+    return lugar;
+}
+
+void llegarAlLugar(struct mapa* mapa, struct banda* banda){
+    struct lugar* lugar= obtenerLugar(mapa, mapa->posicionBanda);
+    if(lugar==NULL){
+        printf("La banda esta en una posicion invalida del mundo\n");
+        return;
+    }
+    printf("Has llegado a %s\n", lugar->nombre);
+    struct actor* actorActual=lugar->listaDeActores;
+    if(actorActual==NULL){
+        printf("No hay actor presenten en este lugar, relajado\n");
+    }else{
+        while(actorActual!=NULL){
+            printf("ATAQUE DEL ACTOR %s (Daño Mental: %d, Daño Fisico: %d)\n", actorActual->nombre, actorActual->dannoMental, actorActual->dannoFisico);
+            actorActual=actorActual->siguiente;
+        }
+    }
+
+    struct proyecto* proyectoActual=lugar->listaDeProyectos;
+    if (proyectoActual!=NULL){
+        printf("Proyectos disponibles:\n");
+        while(proyectoActual!=NULL){
+            printf("  - %s (Destino: %d, Requiere salud mental: %d)\n", proyectoActual->nombre, proyectoActual->lugarDestino,proyectoActual->saludMentalRequerida);
+            printf("  Este provoca un daño de: %d", proyectoActual->dannoBienestar);
+            proyectoActual=proyectoActual->siguiente;
+        }
+    } 
+}
 
 
 

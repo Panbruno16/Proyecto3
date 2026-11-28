@@ -158,4 +158,20 @@ void asignarProyectos(struct mapa* mapa);
  * Funcion para mostrar los proyectos y sus asiganciones.
  */
 void mostrarProyectos(struct mapa* mapa);
+
+/**
+ * Funcion para obtener el lugar de donde esta la banda y ser apoyada en la funcion de llegarAlLugar
+ */
+struct lugar* obtenerLugar(struct mapa* mapa, int posicion);
+
+/**
+ * Funcion calcular la llegada a un lugar.
+ */
+void llegarAlLugar(struct mapa* mapa, struct banda* banda);
+
+
+
+
+
+
 #endif // MAPA_H
