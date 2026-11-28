@@ -1,0 +1,6 @@
+Ratero del sector,5,0
+Empresario sin escrúpulos,8,2
+Policía corrupto,3,6
+Megacorporación verde,10,4
+DonaldoTrompas, 15, 10
+Stivonie, 7, 8

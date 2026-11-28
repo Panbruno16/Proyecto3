@@ -17,6 +17,7 @@ int main() {
     miMapa.densidadDePortales = 10; // Establecer la densidad de portales deseada
     miMapa.cantidadDeLugares = 200; // Establecer la cantidad de lugares deseada
     crearLugares(&miMapa);
+    asignarActores(&miMapa);
     generarMapa(&miMapa);
     asegurarComponenteConexa(&miMapa);
     crearBanda(&miBanda);
@@ -24,7 +25,7 @@ int main() {
     calcularDijkstra(&miMapa, 0, 10); 
 
     mostrarResumenMundo(&miMapa);
-
+    mostrarActores(&miMapa);
 
     return 0;
 }

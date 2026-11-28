@@ -402,3 +402,89 @@ int calcularDijkstra(struct mapa* mapa, int origen, int destino){
 
     return distancia[destino];
 }
+
+int leerCatalogoActores(struct actor catalogo[], int capacidad){
+    FILE* archivo = fopen("actores.txt", "r");
+    if(archivo==NULL){
+        printf("Error, no se pudo cargar actores. Se necesitan actores para poder crear el mapa.\n");
+        return 0;
+    }
+    int total=0;
+    char linea[100];
+    while(fgets(linea, 100, archivo)!= NULL){
+        linea[strcspn(linea, "\n")]= 0;
+        if (strlen(linea)==0){
+            continue;
+        }
+        if(total>=capacidad){
+            break;
+        }        
+            
+        if(sscanf(linea, "%49[^,], %d, %d",
+            catalogo[total].nombre,
+            &catalogo[total].dannoMental,
+            &catalogo[total].dannoFisico
+        )==3){
+            total++;
+        }
+    }
+    fclose(archivo);
+    if(total==0){
+        printf("No se encontraron actores validos.\n");
+    }
+    return total;
+}
+
+void asignarActores(struct mapa* mapa){
+    struct actor catalogo[100];
+    int total=leerCatalogoActores(catalogo, 100);
+    if(total==0){
+        printf("Sin catalogo, no se puede asignar los actores\n");
+        return;
+    }
+    struct lugar* lugarActual=mapa->listaLugares;
+    while(lugarActual!=NULL){
+        int cantidad= (rand()%100<65) ? 1:0;
+        for(int k=0; k<cantidad; k++){
+            struct actor* elegido =&catalogo[rand()%total];
+            struct actor* nuevo =calloc(1, sizeof(struct actor));
+            strcpy(nuevo->nombre, elegido->nombre);
+            nuevo->dannoMental=elegido->dannoMental;
+            nuevo->dannoFisico=elegido->dannoFisico;
+            nuevo->siguiente=lugarActual->listaDeActores;
+            lugarActual->listaDeActores=nuevo;
+        }    
+        lugarActual=lugarActual->siguiente;
+    }
+}
+
+void mostrarActores(struct mapa* mapa){
+    struct lugar* lugarActual=mapa->listaLugares;
+    int indice=0;
+    if(mapa==NULL){
+        printf("No hay mundo disponible\n");
+        return;
+    }
+    while(lugarActual!=NULL){
+       struct actor* actual=lugarActual->listaDeActores;
+       if(actual!=NULL){
+        printf("lugar %d (%s)", indice, lugarActual->nombre);
+        while(actual!=NULL){
+            printf("   - %s (M:%d F:%d)\n",
+            actual->nombre, actual->dannoMental, actual->dannoFisico);
+            actual=actual->siguiente;
+            }
+        }else{
+            printf("Lugar %d (%s)    - no tiene actor\n", indice, lugarActual->nombre);
+        }
+        lugarActual=lugarActual->siguiente;
+        indice++;
+    }
+}
+
+
+
+
+
+
+

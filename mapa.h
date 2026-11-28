@@ -61,7 +61,6 @@ struct actor {
     int dannoMental;
     int dannoFisico;
     struct actor* siguiente;
-
 };
 
 struct proyectos {
@@ -129,5 +128,24 @@ void asignarEmociones(struct persona* persona);
  * Mostrar emociones de cada persona integrante en la banda. 
  */
 void mostrarEmociones(struct persona* persona);
+
+/**
+ * Lee el catalogo de actores para poder determinar el catalogo del mismo y usarse para asignar con una probabilidad en cada lugar. 
+ */
+int leerCatalogoActores(struct actor catalogo[], int capacidad);
+
+/**
+ * Hace la asignacion de los actores en lugar con una probabilidad que haya 1 o 0 actores en cada lugar. 
+ */
+void asignarActores(struct mapa* mapa);
+
+/**
+ * funcion momentanea que muestra los actores de un lugar.
+ */
+void mostrarActores(struct mapa* mapa);
+
+
+
+
 
 #endif // MAPA_H
